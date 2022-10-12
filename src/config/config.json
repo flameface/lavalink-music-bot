@@ -1,0 +1,20 @@
+{
+    "TOKEN": "TOKEN-HERE",
+    "CLIENTID": "CLIENT-ID",
+    "OWNER": [
+        "OWNER-ID"
+    ],
+    "NODES": [
+        {
+            "name": "NODE-1",
+            "host": "node1.kartadharta.xyz",
+            "port": 443,
+            "password": "kdlavalink",
+            "secure": true
+        }
+    ],
+    "SPOTIFY": {
+        "clientID": "cb41529dc3bd4d8f8a240dbee0fff4e8",
+        "clientSecret": "bcca82f42930498aa385a8289fdf276b"
+    }
+}
