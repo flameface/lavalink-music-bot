@@ -7,17 +7,14 @@ module.exports = {
 
 client.on("interactionCreate", async interaction => {
     if (!interaction.isButton()) return;
-    const player = client.poru.players.get(interaction.guild.id);
-    if (!player) return interaction.reply({
-        content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`,
-        ephemeral: true
-    })
 
-    if (interaction.user.id !== player.currentTrack.info.requester.id)
-        return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+    const player = client.poru.players.get(interaction.guild.id);
 
     if (interaction.customId === "loop") {
         try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+
             const loop = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
@@ -36,16 +33,18 @@ client.on("interactionCreate", async interaction => {
 
             interaction.reply({
                 embeds: [embed],
-                components: [loop],
-                ephemeral: true
+                components: [loop]
             })
         } catch {
-            interaction.reply({ content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
         }
     }
 
     if (interaction.customId === 'volume-') {
         try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+
             if (player.volume < 20) {
                 player.setVolume(10)
                 const embed = new EmbedBuilder()
@@ -61,12 +60,15 @@ client.on("interactionCreate", async interaction => {
             }
 
         } catch {
-            interaction.reply({ content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
         }
     }
 
     if (interaction.customId === 'volume+') {
         try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+
             if (player.volume > 90) {
                 player.setVolume(100)
                 const embed = new EmbedBuilder()
@@ -81,12 +83,15 @@ client.on("interactionCreate", async interaction => {
                 return interaction.reply({ embeds: [embed], ephemeral: true })
             }
         } catch {
-            interaction.reply({ content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
         }
     }
 
     if (interaction.customId === 'p/p') {
         try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+
             if (player.isPaused) {
                 player.pause(false);
                 const embed = new EmbedBuilder()
@@ -94,7 +99,7 @@ client.on("interactionCreate", async interaction => {
                     .setColor('Blue')
                     .setDescription('▶ The player has been resumed');
 
-                interaction.reply({ embeds: [embed] }).then(setTimeout(() => interaction.deleteReply(), 5000))
+                interaction.reply({ embeds: [embed] })
             } else {
                 player.pause(true);
 
@@ -103,60 +108,84 @@ client.on("interactionCreate", async interaction => {
                     .setColor('Blue')
                     .setDescription('⏸ The player has been paused');
 
-                interaction.reply({ embeds: [embed] }).then(setTimeout(() => interaction.deleteReply(), 5000))
+                interaction.reply({ embeds: [embed] })
             }
         } catch {
-            interaction.reply({ content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
         }
     }
 
     if (interaction.customId === 'skip') {
         try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
+
             player.stop();
 
             const embed = new EmbedBuilder()
                 .setColor('Blue')
                 .setDescription('⏭ Skipped the current track');
 
-            await interaction.reply({ embeds: [embed] }).then(setTimeout(() => interaction.deleteReply(), 5000))
+            await interaction.reply({ embeds: [embed] })
         } catch {
-            interaction.reply({ content: `${client.emoji.wrong} **${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
         }
     }
 
     if (interaction.customId === 'track') {
-        player.setLoop("TRACK")
+        try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
 
-        const embed = new EmbedBuilder()
-            .setDescription(`🔄 Switched to track loop mode`)
-            .setColor(`Blue`)
+            player.setLoop("TRACK")
 
-        interaction.reply({
-            embeds: [embed]
-        }).then(setTimeout(() => interaction.deleteReply(), 5000))
+            const embed = new EmbedBuilder()
+                .setDescription(`🔄 Switched to track loop mode`)
+                .setColor(`Blue`)
+
+            interaction.reply({
+                embeds: [embed]
+            }).then(setTimeout(() => interaction.deleteReply(), 5000))
+        } catch {
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+        }
     }
 
     if (interaction.customId === 'queue') {
-        player.setLoop("QUEUE")
+        try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
 
-        const embed = new EmbedBuilder()
-            .setDescription(`🔄 Switched to queue loop mode`)
-            .setColor(`Blue`)
+            player.setLoop("QUEUE")
 
-        interaction.reply({
-            embeds: [embed]
-        }).then(setTimeout(() => interaction.deleteReply(), 5000))
+            const embed = new EmbedBuilder()
+                .setDescription(`🔄 Switched to queue loop mode`)
+                .setColor(`Blue`)
+
+            interaction.reply({
+                embeds: [embed]
+            }).then(setTimeout(() => interaction.deleteReply(), 5000))
+        } catch {
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+        }
     }
 
     if (interaction.customId === 'disable') {
-        player.setLoop("NONE")
+        try {
+            if (interaction.user.id !== player.currentTrack.info.requester.id)
+                return interaction.reply({ content: `You are not allowed to use buttons for this message!`, ephemeral: true });
 
-        const embed = new EmbedBuilder()
-            .setImage('⭕ Loop has been disabled')
-            .setColor("Blue")
+            player.setLoop("NONE")
 
-        interaction.reply({
-            embeds: [embed]
-        }).then(setTimeout(() => interaction.deleteReply(), 5000))
+            const embed = new EmbedBuilder()
+                .setImage('⭕ Loop has been disabled')
+                .setColor("Blue")
+
+            interaction.reply({
+                embeds: [embed]
+            }).then(setTimeout(() => interaction.deleteReply(), 5000))
+        } catch {
+            interaction.reply({ content: `**${interaction.member.displayName}** No player exists for this server.`, ephemeral: true })
+        }
     }
 })
