@@ -178,7 +178,7 @@ client.on("interactionCreate", async interaction => {
             player.setLoop("NONE")
 
             const embed = new EmbedBuilder()
-                .setImage('⭕ Loop has been disabled')
+                .setDescription('⭕ Loop has been disabled')
                 .setColor("Blue")
 
             interaction.reply({
